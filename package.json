@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "test": "node ./remove-console/remove-console.test.js"
+  },
+  "dependencies": {
+    "@babel/core": "^7.24.0",
+    "@babel/traverse": "^7.24.0",
+    "@babel/types": "^7.24.0"
+  },
+  "devDependencies": {
+    "@babel/helper-plugin-test-runner": "^7.22.5",
+    "@types/node": "^20.11.25",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-tester": "^11.0.4"
+  }
+}
