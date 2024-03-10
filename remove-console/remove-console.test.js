@@ -32,11 +32,17 @@ pluginTester({
       log("Hello");`,
     },
     {
-      title: "Short-circuit evaluations",
+      title: "Short-circuit evaluations (Logical Expressions: && || ??)",
       code: `
-      true && console.log("Hello");`,
+      true && console.log("Hello");
+      console.log("Hello") || true;
+      false ?? console.log("Hello");
+      (false && true) || (false && true) || console.log("Hello")`,
       output: `
-      true;`
-    }
+      true && void 0;
+      void 0 || true;
+      false ?? void 0;
+      (false && true) || (false && true) || void 0;`,
+    },
   ],
 });
