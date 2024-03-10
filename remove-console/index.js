@@ -14,7 +14,7 @@ module.exports = function ({ types: t }) {
         if (!t.isMemberExpression(callee)) return;
 
         const parent = path.parent;
-        if (t.isLogicalExpression(parent)) {
+        if (t.isLogicalExpression(parent) || t.isConditionalExpression(parent)) {
           const void0 = t.unaryExpression("void", t.numericLiteral(0));
           path.replaceWith(void0);
           return;
@@ -22,7 +22,7 @@ module.exports = function ({ types: t }) {
 
         if (callee.object.name === "console" && callee.property.name === "log") {
           path.remove();
-          // return;
+          return;
         }
       },
     },

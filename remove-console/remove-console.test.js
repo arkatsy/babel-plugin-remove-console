@@ -44,5 +44,12 @@ pluginTester({
       false ?? void 0;
       (false && true) || (false && true) || void 0;`,
     },
+    {
+      title: "Ternaries",
+      code: `
+      true ? console.log("Hello") : false;`,
+      output: `
+      true ? void 0 : false;`,
+    },
   ],
 });
