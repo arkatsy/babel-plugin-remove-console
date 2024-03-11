@@ -1,22 +1,26 @@
 const t = require("@babel/types");
 
-module.exports = function () {
+const logLevels = ["log", "warn", "error"];
+
+module.exports = function (_, opts) {
+  const excludedProps = Array.isArray(opts?.exclude) ? opts.exclude : [];
+
   return {
     name: "remove-console",
     visitor: {
-      CallExpression(path) {
+      CallExpression(path, state) {
         const callee = path.get("callee");
         if (!t.isMemberExpression(callee)) return;
 
-        if (isExprConsoleLog(callee)) {
+        if (isExprConsoleLog(callee, excludedProps)) {
           path.remove();
         }
       },
-      VariableDeclarator(path) {
+      VariableDeclarator(path, state) {
         const init = path.get("init");
         if (!t.isMemberExpression(init)) return;
 
-        if (isExprConsoleLog(init)) {
+        if (isExprConsoleLog(init, excludedProps)) {
           const emptyFn = t.functionExpression(null, [], t.blockStatement([]));
           init.replaceWith(emptyFn);
         }
@@ -25,26 +29,33 @@ module.exports = function () {
   };
 };
 
-function isExprConsoleLog(node) {
-  return isSimpleConsoleLog(node) || isBindedConsoleLog(node);
+function isExprConsoleLog(node, excludedProps) {
+  return isSimpleConsoleLog(node, excludedProps) || isBindedConsoleLog(node, excludedProps);
 }
 
-function isSimpleConsoleLog(node) {
+function isSimpleConsoleLog(node, excludedProps) {
   const object = node.get("object");
   const property = node.get("property");
+
   return (
     t.isIdentifier(object.node, { name: "console" }) &&
-    t.isIdentifier(property.node, { name: "log" })
+    !excludedProps.includes(property.node.name) &&
+    logLevels.includes(property.node.name)
   );
 }
 
-function isBindedConsoleLog(node) {
+function isBindedConsoleLog(node, excludedProps) {
   const object = node.get("object");
   const property = node.get("property");
 
   return (
     t.isIdentifier(object.get("object").node, { name: "console" }) &&
-    t.isIdentifier(object.get("property").node, { name: "log" }) &&
+    !excludedProps.includes(object.get("property").node.name) &&
+    logLevels.includes(object.get("property").node.name) &&
     ["bind", "call", "apply"].includes(property.node.name)
   );
+}
+
+function isExcludedProperty(node, excludedProps) {
+  return opts.includes(node.name);
 }

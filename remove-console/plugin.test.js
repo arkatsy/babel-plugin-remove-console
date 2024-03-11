@@ -76,5 +76,20 @@ pluginTester({
       console.log.apply(console, [4]);`,
       output: ``,
     },
+    {
+      title: "Should work with custom options about excluding certain log levels",
+      pluginOptions: {
+        exclude: ["warn", "error"],
+      },
+      code: `
+      console.log(4);
+      console.warn(4);
+      console.error(4);
+      console.warn.bind(console, 4);`,
+      output: `
+      console.warn(4);
+      console.error(4);
+      console.warn.bind(console, 4);`,
+    },
   ],
 });
