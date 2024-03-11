@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "node ./remove-console/plugin.test.js"
+    "test": "node ./plugin.test.js"
   },
   "dependencies": {
     "@babel/core": "^7.24.0",
