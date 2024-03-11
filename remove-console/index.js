@@ -8,7 +8,7 @@ module.exports = function (_, opts) {
   return {
     name: "remove-console",
     visitor: {
-      CallExpression(path, state) {
+      CallExpression(path) {
         const callee = path.get("callee");
         if (!t.isMemberExpression(callee)) return;
 
@@ -16,7 +16,7 @@ module.exports = function (_, opts) {
           path.remove();
         }
       },
-      VariableDeclarator(path, state) {
+      VariableDeclarator(path) {
         const init = path.get("init");
         if (!t.isMemberExpression(init)) return;
 
@@ -54,8 +54,4 @@ function isBindedConsoleLog(node, excludedProps) {
     logLevels.includes(object.get("property").node.name) &&
     ["bind", "call", "apply"].includes(property.node.name)
   );
-}
-
-function isExcludedProperty(node, excludedProps) {
-  return opts.includes(node.name);
 }
